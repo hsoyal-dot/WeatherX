@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import 'additional_info_cards.dart';
 import 'hourly_forecast_cards.dart';
@@ -18,7 +19,6 @@ class _WeatherAppBodyState extends State<WeatherAppBody> {
   @override
   void initState() {
     super.initState();
-    getWeatherDetails();
   }
 
   Future<Map<String, dynamic>> getWeatherDetails() async {
@@ -26,7 +26,7 @@ class _WeatherAppBodyState extends State<WeatherAppBody> {
       final cityName = 'Bhopal';
       final String apiKey = dotenv.env['API_KEY']!;
       final res = await http.get(Uri.parse(
-          'http://api.openweathermap.org/data/2.5/forecast?q=$cityName,&appid=$apiKey'));
+          'http://api.openweathermap.org/data/2.5/forecast?q=$cityName&appid=$apiKey'));
       final data = jsonDecode(res.body);
       if (data['cod'] != "200") {
         throw "An unexpected error occured";
@@ -58,19 +58,21 @@ class _WeatherAppBodyState extends State<WeatherAppBody> {
         final data =
             snapshot.data!; //means data will for sure won't have null value
 
-        /* Main Card */
-        final currentTemp = data['list'][0]['main']['temp'];
+        /* Main Card variables */
+        final currentTempinK = data['list'][0]['main']['temp'];
+        final currentTempinC =
+            '${(currentTempinK - 273.15).toStringAsFixed(1)}';
         final weatherIcon = data['list'][0]['weather'][0]['icon'];
-        final weatherCondition = data['list'][0]['weather'][0]['main'];
-        final weatherDesc = data['list'][0]['weather'][0]['description'];
+        final currentCondition = data['list'][0]['weather'][0]['main'];
+        final currentDescription = data['list'][0]['weather'][0]['description'];
 
-        /* Forecasted Cards */
-
-        /* Additional Info */
+        
+        /* Additional Info variables */
         final humidity = data['list'][0]['main']['humidity'];
         final windSpeed = data['list'][0]['wind']['speed'];
         final pressure = data['list'][0]['main']['pressure'];
 
+        /* MAIN CARD */
         return Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Column(
@@ -85,7 +87,7 @@ class _WeatherAppBodyState extends State<WeatherAppBody> {
                       padding: EdgeInsets.all(18.0),
                       child: Column(
                         children: [
-                          Text('$currentTemp K',
+                          Text('$currentTempinC °C',
                               style: TextStyle(
                                 fontSize: 29,
                                 fontWeight: FontWeight.bold,
@@ -97,7 +99,7 @@ class _WeatherAppBodyState extends State<WeatherAppBody> {
                             size: 80,
                           ),
                           Text(
-                            '$weatherCondition',
+                            '$currentCondition',
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w300,
@@ -105,7 +107,7 @@ class _WeatherAppBodyState extends State<WeatherAppBody> {
                             ),
                           ),
                           Text(
-                            '$weatherDesc',
+                            '$currentDescription',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w300,
@@ -122,6 +124,7 @@ class _WeatherAppBodyState extends State<WeatherAppBody> {
               SizedBox(
                 height: 20,
               ),
+              /* ADDITIONAL INFO CARDS */
               Container(
                 alignment: Alignment.topLeft,
                 child: Text(
@@ -161,6 +164,7 @@ class _WeatherAppBodyState extends State<WeatherAppBody> {
               SizedBox(
                 height: 30,
               ),
+              /* FORECASTED CARDS */
               Container(
                 alignment: Alignment.topLeft,
                 child: Text(
@@ -183,17 +187,16 @@ class _WeatherAppBodyState extends State<WeatherAppBody> {
                   children: [
                     for (int i = 0; i < 5; i++)
                       HourlyForecastCards(
-                        weatherTime: data['list'][i]['dt_txt']
-                            .split(' ')[1]
-                            .substring(0, 5),
-                        weatherIcon: ImageIcon(
+                        forecastTime: DateFormat('h:mm a').format(
+                            DateTime.parse(data['list'][i + 2]['dt_txt'])),
+                        forecastIcon: ImageIcon(
                           NetworkImage(
-                              'https://openweathermap.org/img/wn/${data['list'][i]['weather'][0]['icon']}@2x.png'),
+                              'https://openweathermap.org/img/wn/${data['list'][i + 2]['weather'][0]['icon']}@2x.png'),
                           size: 52,
                           color: Colors.white,
                         ),
-                        weatherTemperature: data['list'][i]['weather'][0]
-                            ['main'],
+                        forecastTemperature:
+                            '${double.parse(((data['list'][i + 2]['main']['temp']) - 273.15).toStringAsFixed(1))} °C',
                       ),
                   ],
                 ),

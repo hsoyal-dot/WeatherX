@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app/weather_app_body.dart';
 
-class WeatherScreen extends StatelessWidget {
+class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
 
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,10 +25,11 @@ class WeatherScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                print("ref");
+                setState(() {
+                  WeatherAppBody();
+                });
               },
-              icon: Icon(Icons.refresh)
-            )
+              icon: Icon(Icons.refresh))
         ],
       ),
       body: WeatherAppBody(),

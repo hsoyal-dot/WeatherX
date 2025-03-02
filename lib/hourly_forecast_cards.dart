@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class HourlyForecastCards extends StatelessWidget {
-  final String weatherTime;
-  final ImageIcon weatherIcon;
-  final String weatherTemperature;
+  final String forecastTime;
+  final ImageIcon forecastIcon;
+  final String forecastTemperature;
   const HourlyForecastCards(
       {super.key,
-      required this.weatherTime,
-      required this.weatherIcon,
-      required this.weatherTemperature});
+      required this.forecastTime,
+      required this.forecastIcon,
+      required this.forecastTemperature});
 
   @override
   Widget build(BuildContext context) {
@@ -18,20 +18,19 @@ class HourlyForecastCards extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              weatherTime,
+              forecastTime,
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.white,
               ),
             ),
-            weatherIcon,
+            forecastIcon,
             Text(
-              weatherTemperature,
+              forecastTemperature,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w300,
                 color: Colors.white,
-                letterSpacing: 2,
               ),
             ),
             SizedBox(
