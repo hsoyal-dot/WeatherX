@@ -32,6 +32,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+.packages
 
 # Symbolication related
 app.*.symbols
@@ -55,3 +56,9 @@ macos/
 *.cmake
 *.h
 *.cc
+
+
+# Platform Specific
+android/.gradle/
+android/.idea/
+*.bak
