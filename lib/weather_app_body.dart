@@ -23,7 +23,7 @@ class _WeatherAppBodyState extends State<WeatherAppBody> {
 
   Future<Map<String, dynamic>> getWeatherDetails() async {
     try {
-      final cityName = 'Bhopal';
+      final cityName = 'New York';
       final String apiKey = dotenv.env['API_KEY']!;
       final res = await http.get(Uri.parse(
           'http://api.openweathermap.org/data/2.5/forecast?q=$cityName&appid=$apiKey'));
